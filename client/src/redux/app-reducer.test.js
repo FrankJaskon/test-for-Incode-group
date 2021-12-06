@@ -1,77 +1,62 @@
-import appReducer from '../redux/app-reducer';
+import reducer, {setHiddenTicker, setIsConnectedData, setTickersData, setTrackedTicker} from '../redux/app-reducer';
 
 const initialState = {
-    app: {
-        tickers: [],
-        isConnected: false,
-        hiddenTickers: []
-    }
-};
+    tickers: [],
+    isConnected: false,
+    hiddenTickers: []
+}
 
-test('should return the initial state', () => {
-    expect(appReducer(initialState, {})).toEqual(initialState)
-});
+let state = {};
 
-test('tickers array should consist of one item with testing data', () => {
-
-    let state;
-
-    state = appReducer(initialState, {
-        type: 'new-test/app/SET-TICKERS-DATA',
-        payload: {
-            tickers: [{
-                ticker: 'AAPL',
-                exchange: 'NASDAQ',
-                price: '203.04',
-                change: '45.23',
-                change_percent: '0.51',
-                dividend: '0.24',
-                yield: '0.00',
-                last_trade_time: '2021-12-05T13:59:41.000Z'
-            }]
-        }
-    });
-    expect(state).toEqual({
-        app: {
-            tickers: [{
-                ticker: 'AAPL',
-                exchange: 'NASDAQ',
-                price: '203.04',
-                change: '45.23',
-                change_percent: '0.51',
-                dividend: '0.24',
-                yield: '0.00',
-                last_trade_time: '2021-12-05T13:59:41.000Z'
-            }],
+describe('app-reducer testing', () => {
+    it('should return the initial state', () => {
+        expect(reducer(undefined, {})).toEqual({
+            tickers: [],
             isConnected: false,
             hiddenTickers: []
-        }
+        });
     });
 });
 
-// test('isConnected should be true', () => {
 
-//     let state;
+it('tickers array should consist of one item with testing data', () => {
+    state = reducer(initialState, setTickersData([{
+                ticker: 'AAPL',
+                exchange: 'NASDAQ',
+                price: '130.19',
+                change: 0,
+                change_percent: 0,
+                dividend: '0.17',
+                yield: '1.05',
+                last_trade_time: '2021-12-06T04:56:15.000Z'
+            }]));
+    expect(state).toEqual({
+        tickers: [{
+            ticker: 'AAPL',
+            exchange: 'NASDAQ',
+            price: '130.19',
+            change: 0,
+            change_percent: 0,
+            dividend: '0.17',
+            yield: '1.05',
+            last_trade_time: '2021-12-06T04:56:15.000Z'
+        }],
+        isConnected: false,
+        hiddenTickers: []
+    });
+});
 
-//     state = appReducer(initialState,
-//         {
-//         type: 'new-test/app/SET-IS-CONNECTED',
-//         payload: {
-//             isConnected: true
-//         }
-//     });
-//     expect(state).toEqual({app: {isConnected: true}});
-// });
+it('isConnected should be true', () => {
+    state = reducer(initialState, setIsConnectedData(true));
+    expect(state.isConnected).toEqual(true);
+});
 
-// test('hiddenTickers array should consist of one item with name AAPL', () => {
+it('hiddenTickers array should consist of one item with name AAPL', () => {
+    state = reducer(initialState, setHiddenTicker('AAPL'));
+    expect(state.hiddenTickers).toEqual(['AAPL']);
+});
 
-//     let state;
-
-//     state = appReducer(initialState, {
-//         type: 'new-test/app/SET_HIDDEN_TICKER',
-//         payload: {
-//             ticker: 'AAPL'
-//         }
-//     });
-//     expect(state).toEqual({app: {hiddenTickers: ['AAPL']}});
-// });
+it('hiddenTickers array should be empty array', () => {
+    state = reducer(initialState, setTrackedTicker('AAPL'));
+    expect(state.hiddenTickers).toEqual([]);
+});

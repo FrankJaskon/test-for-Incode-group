@@ -68,3 +68,4 @@ export const setIsConnected = isConnected => dispatch => {
 };
 
 export default appReducer;
+
